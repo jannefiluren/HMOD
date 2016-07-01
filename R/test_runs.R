@@ -98,6 +98,7 @@ gr4j_test_calib = function() {
 #' @description  Wrapper for running GR4J and computing performance measures
 #' @param Some inputs
 #' @return Some outputs
+#' @export
 
 calib_wrapper_gr4j = function(Param,indata,evaldata) {
 
@@ -163,7 +164,6 @@ model_test_calib = function() {
 
   print(res_calib$value)
 
-
 }
 
 
@@ -171,10 +171,13 @@ model_test_calib = function() {
 #' @description  Wrapper for running GR4J and snow model and computing performance measures
 #' @param Some inputs
 #' @return Some outputs
+#' @export
 
 calib_wrapper_model = function(Param,indata,evaldata) {
 
   # Run model
+
+  # indata$Param = Param
 
   indata = c(indata,list(Param = Param))
 
