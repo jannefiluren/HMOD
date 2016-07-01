@@ -6,7 +6,7 @@ R package with a simple snow (temperature index) and hydrological model (GR4J).
 
 Note that for installation on windows the package requires Rtools (https://cran.r-project.org/bin/windows/Rtools/).
 
-Build this package in RStudio by downloading all files and afterwards 'build' the project.
+Build this package in RStudio by (a) downloading all files, (b) open the project, and (c) finally 'building' the project.
 
 ## Example how to run the model
 
