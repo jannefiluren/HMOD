@@ -1,7 +1,40 @@
-#' Wrapper for running models
+#' Wrapper for running snow and hydrological model
 #'
-#' @param Some inputs
-#' @return Some outputs
+#' The snow model is a simple temperature index model.
+#' The hydrological model is the GR4J model.
+#'
+#' @param indata A list with the following items:
+#'
+#' \itemize{
+#'   \item \code{Prec} Matrix with precipitation, dimensions Ntimes * NZones
+#'   \item \code{Tair} Matrix with air temperature, dimensions Ntimes * NZones
+#'   \item \code{PET} Vector with potential evapotranspiration, dimensions Ntimes
+#'   \item \code{SWE} Initial state of snow water equivalent
+#'   \item \code{St} Initial state of storages
+#'   \item \code{StUH1} Initial state of first unit hydrograph
+#'   \item \code{StUH2} Initial state of second unit hydrograph
+#'   \item \code{Param} Model parameters
+#' }
+#'
+#' @examples
+#'
+#' iwsh <- 3
+#'
+#' indata = list(Prec   = sample_data[[iwsh]]$Prec,
+#'               Tair   = sample_data[[iwsh]]$Tair,
+#'               PET    = matrix(0, nrow=nrow(sample_data[[iwsh]]$Prec), ncol=1),
+#'               SWE    = matrix(0, nrow=1, ncol=NZones),
+#'               St     = matrix(0, nrow=2, ncol=1),
+#'               StUH1  = matrix(0, 20, ncol=1),
+#'               StUH2  = matrix(0, 40, ncol=1),
+#'               Param  = c(74.59, 0.81, 214.98, 1.24, 3.69, 1.02))
+#'
+#' res_sim <- model_wrapper(indata)
+#'
+#' plot(evaldata, type = "l", col = "black", lwd = 2)
+#' lines(res_sim$Q, col = "red")
+#'
+#' @return A list with state variables and simulated runoff
 #' @export
 
 model_wrapper = function(indata) {
@@ -19,33 +52,36 @@ model_wrapper = function(indata) {
 
   # Test inputs
 
-  if(!"NTimes" %in% names(indata)) stop("NTimes missing as input")
-  if(!"NZones" %in% names(indata)) stop("NZones missing as input")
   if(!"Prec" %in% names(indata)) stop("Prec missing as input")
   if(!"Tair" %in% names(indata)) stop("Tair missing as input")
   if(!"PET" %in% names(indata)) stop("PET missing as input")
   if(!"SWE" %in% names(indata)) stop("SWE missing as input")
-  if(!"Param" %in% names(indata)) stop("Param missing as input")
   if(!"St" %in% names(indata)) stop("St missing as input")
   if(!"StUH1" %in% names(indata)) stop("StUH1 missing as input")
   if(!"StUH2" %in% names(indata)) stop("StUH2 missing as input")
+  if(!"Param" %in% names(indata)) stop("Param missing as input")
+
+  # Dimensions of input data
+
+  NTimes = nrow(indata$Prec)
+  NZones = ncol(indata$Prec)
 
   # Run snow model
 
-  insnow = list(NTimes = indata$NTimes,
-                NZones = indata$NZones,
+  insnow = list(NTimes = NTimes,
+                NZones = NZones,
                 Prec = indata$Prec,
                 Tair = indata$Tair,
                 SWE = indata$SWE,
                 Param = indata$Param[Pos_param_snow],
-                MeltRain_all = matrix(0, nrow=indata$NTimes, ncol=indata$NZones),
-                SWE_all = matrix(0, nrow=indata$NTimes, ncol=indata$NZones))
+                MeltRain_all = matrix(0, nrow=NTimes, ncol=NZones),
+                SWE_all = matrix(0, nrow=NTimes, ncol=NZones))
 
   res_snow = snow_wrapper(insnow)
 
   # Run runoff model
 
-  inrof = list(NTimes = indata$NTimes,
+  inrof = list(NTimes = NTimes,
                Prec = rowMeans(res_snow$MeltRain_all),
                PET = indata$PET,
                St = indata$St,

@@ -2,17 +2,48 @@
 % Please edit documentation in R/model_wrapper.R
 \name{model_wrapper}
 \alias{model_wrapper}
-\title{Wrapper for running models}
+\title{Wrapper for running snow and hydrological model}
 \usage{
 model_wrapper(indata)
 }
 \arguments{
-\item{Some}{inputs}
+\item{indata}{A list with the following items:
+
+\itemize{
+  \item \code{Prec} Matrix with precipitation, dimensions Ntimes * NZones
+  \item \code{Tair} Matrix with air temperature, dimensions Ntimes * NZones
+  \item \code{PET} Vector with potential evapotranspiration, dimensions Ntimes
+  \item \code{SWE} Initial state of snow water equivalent
+  \item \code{St} Initial state of storages
+  \item \code{StUH1} Initial state of first unit hydrograph
+  \item \code{StUH2} Initial state of second unit hydrograph
+  \item \code{Param} Model parameters
+}}
 }
 \value{
-Some outputs
+A list with state variables and simulated runoff
 }
 \description{
-Wrapper for running models
+The snow model is a simple temperature index model.
+The hydrological model is the GR4J model.
+}
+\examples{
+
+iwsh <- 3
+
+indata = list(Prec   = sample_data[[iwsh]]$Prec,
+              Tair   = sample_data[[iwsh]]$Tair,
+              PET    = matrix(0, nrow=nrow(sample_data[[iwsh]]$Prec), ncol=1),
+              SWE    = matrix(0, nrow=1, ncol=NZones),
+              St     = matrix(0, nrow=2, ncol=1),
+              StUH1  = matrix(0, 20, ncol=1),
+              StUH2  = matrix(0, 40, ncol=1),
+              Param  = c(74.59, 0.81, 214.98, 1.24, 3.69, 1.02))
+
+res_sim <- model_wrapper(indata)
+
+plot(evaldata, type = "l", col = "black", lwd = 2)
+lines(res_sim$Q, col = "red")
+
 }
 
