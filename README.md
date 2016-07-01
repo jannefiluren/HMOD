@@ -4,19 +4,9 @@ R package with a simple snow (temperature index) and hydrological model (GR4J).
 
 ## Installation
 
-In RStudio, install package devtools:
-
-```R
-install.packages("devtools")
-```
-
-Install the package with the following code:
-
-```R
-library(devtools)
-install_github("jmgnve/HMOD")
-```
 Note that for installation on windows the package requires Rtools (https://cran.r-project.org/bin/windows/Rtools/).
+
+Build this package in RStudio by downloading all files and afterwards 'build' the project.
 
 ## Example how to run the model
 
