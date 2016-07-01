@@ -2,17 +2,11 @@
 % Please edit documentation in R/test_runs.R
 \name{model_test_calib}
 \alias{model_test_calib}
-\title{Test GR4J and snow model}
+\title{Test calibration of snow and hydrological model}
 \usage{
 model_test_calib()
 }
-\arguments{
-\item{Some}{inputs}
-}
-\value{
-Some outputs
-}
 \description{
-Calibrate GR4J with snow model
+Calibrate the models and check results against observations
 }
 

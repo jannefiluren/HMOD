@@ -2,15 +2,9 @@
 % Please edit documentation in R/test_runs.R
 \name{gr4j_test_run}
 \alias{gr4j_test_run}
-\title{Test GR4J}
+\title{Test hydrological model}
 \usage{
 gr4j_test_run()
-}
-\arguments{
-\item{Some}{inputs}
-}
-\value{
-Some outputs
 }
 \description{
 Run GR4J and check against results from airGR package

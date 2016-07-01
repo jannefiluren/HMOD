@@ -2,15 +2,9 @@
 % Please edit documentation in R/test_runs.R
 \name{gr4j_test_calib}
 \alias{gr4j_test_calib}
-\title{Test calibration of GR4J}
+\title{Test calibration of hydrological model}
 \usage{
 gr4j_test_calib()
-}
-\arguments{
-\item{Some}{inputs}
-}
-\value{
-Some outputs
 }
 \description{
 Calibrate GR4J and check against results from airGR package
