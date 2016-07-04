@@ -8,7 +8,7 @@ Package available upon request.
 
 Note that for installation on windows the package requires Rtools (https://cran.r-project.org/bin/windows/Rtools/).
 
-Build this package from source code ```R install.packages(path_to_file, repos = NULL, type="source")```.
+Build this package from source code ``` install.packages(path_to_file, repos = NULL, type="source")```.
 
 ## Example how to run the model
 
