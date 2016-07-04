@@ -12,7 +12,7 @@ Build this package from source code ``` install.packages(path_to_file, repos = N
 
 ## Example how to run the model
 
-```R
+```
 iwsh <- 3
 
 indata = list(Prec   = sample_data[[iwsh]]$Prec,
