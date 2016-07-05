@@ -14,20 +14,22 @@
 #'   \item \code{StUH1} Initial state of first unit hydrograph
 #'   \item \code{StUH2} Initial state of second unit hydrograph
 #'   \item \code{Param} Model parameters
+#'   \item \code{frac_elev_band} Fraction of watershed area for each elevation band
 #' }
 #'
 #' @examples
 #'
 #' iwsh <- 3
 #'
-#' indata = list(Prec   = sample_data[[iwsh]]$Prec,
-#'               Tair   = sample_data[[iwsh]]$Tair,
-#'               PET    = rep(0, nrow(sample_data[[iwsh]]$Prec)),
-#'               SWE    = matrix(0, nrow = 1, ncol = ncol(sample_data[[iwsh]]$Prec)),
-#'               St     = matrix(0, nrow = 2, ncol = 1),
-#'               StUH1  = matrix(0, 20, ncol = 1),
-#'               StUH2  = matrix(0, 40, ncol = 1),
-#'               Param  = c(74.59, 0.81, 214.98, 1.24, 3.69, 1.02))
+#' indata = list(Prec           = sample_data[[iwsh]]$Prec,
+#'               Tair           = sample_data[[iwsh]]$Tair,
+#'               PET            = rep(0, nrow(sample_data[[iwsh]]$Prec)),
+#'               SWE            = matrix(0, nrow = 1, ncol = ncol(sample_data[[iwsh]]$Prec)),
+#'               St             = matrix(0, nrow = 2, ncol = 1),
+#'               StUH1          = matrix(0, 20, ncol = 1),
+#'               StUH2          = matrix(0, 40, ncol = 1),
+#'               Param          = c(74.59, 0.81, 214.98, 1.24, 3.69, 1.02),
+#'               frac_elev_band = sample_data[[iwsh]]$frac_elev_band)
 #'
 #' res_sim <- model_wrapper(indata)
 #'
@@ -66,6 +68,8 @@ model_wrapper <- function(indata) {
     stop("StUH2 missing as input")
   if (!"Param" %in% names(indata))
     stop("Param missing as input")
+  if (!"frac_elev_band" %in% names(indata))
+    stop("frac_elev_band missing as input")
 
   # Dimensions of input data
 
@@ -81,9 +85,14 @@ model_wrapper <- function(indata) {
 
   res_snow <- snow_wrapper(insnow)
 
+  # Compute average melt and rain flux
+
+  MeltRain_mean <- rowSums(res_snow$MeltRain_all *
+                             matrix(indata$frac_elev_band, nrow = NTimes, ncol = NZones, byrow = TRUE))
+
   # Run runoff model
 
-  inrof <- list(Prec = rowMeans(res_snow$MeltRain_all),
+  inrof <- list(Prec = MeltRain_mean,
                 PET = indata$PET,
                 St = indata$St,
                 StUH1 = indata$StUH1,
