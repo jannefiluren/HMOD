@@ -107,7 +107,8 @@ model_wrapper <- function(indata) {
               St = res_hyd$St,
               StUH1 = res_hyd$StUH1,
               StUH2 = res_hyd$StUH2,
-              Q = res_hyd$Q)
+              Q = res_hyd$Q,
+              St_all = res_hyd$St_all)
 
   return(res)
 
@@ -259,7 +260,10 @@ gr4j_wrapper <- function(indata) {
 
   NTimes <- length(indata$Prec)
 
-  Q <-  matrix(0, nrow = NTimes, ncol = 1)
+  Q_all <- matrix(0, nrow = NTimes, ncol = 1)
+  St_all <- matrix(0, nrow = NTimes, ncol = 2)
+  StUH1_all <- matrix(0, nrow = NTimes, ncol = 1)
+  StUH2_all <- matrix(0, nrow = NTimes, ncol = 1)
 
   # Run model
 
@@ -270,7 +274,8 @@ gr4j_wrapper <- function(indata) {
                       St = as.double(indata$St),
                       StUH1 = as.double(indata$StUH1),
                       StUH2 = as.double(indata$StUH2),
-                      Q = as.double(Q),
+                      Q_all = as.double(Q_all),
+                      St_all = as.double(St_all),
                       Param = as.double(indata$Param),
                       PACKAGE = "HMOD")
 
@@ -279,7 +284,8 @@ gr4j_wrapper <- function(indata) {
   RES_OUT <- list(St = RES_TMP$St,
                   StUH1 = RES_TMP$StUH1,
                   StUH2 = RES_TMP$StUH2,
-                  Q = RES_TMP$Q)
+                  Q = RES_TMP$Q_all,
+                  St_all = matrix(RES_TMP$St_all, ncol = 2, byrow = FALSE))
 
   return(RES_OUT)
 
