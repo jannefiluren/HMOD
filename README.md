@@ -28,7 +28,9 @@ indata = list(Prec           = sample_data[[iwsh]]$Prec,
 
 res_sim <- model_wrapper(indata)
 
-plotting_results(sample_data[[iwsh]], res_sim, "tst.png" )
+path <- getwd()
+
+plotting_results(sample_data[[iwsh]], res_sim, path)
 
 ```
 
@@ -73,6 +75,8 @@ res_sim <- model_wrapper(indata)
 
 # Plot results ------------------------------------------------------------
 
-plotting_results(sample_data[[iwsh]], res_sim, "tst.png" )
+path <- getwd()
+
+plotting_results(sample_data[[iwsh]], res_sim, path)
 
 ```
