@@ -13,6 +13,7 @@ Build this package from source code ``` install.packages(path_to_file, repos = N
 ## Example how to run the model
 
 ```R
+
 iwsh <- 3
 
 indata = list(Prec           = sample_data[[iwsh]]$Prec,
@@ -27,8 +28,8 @@ indata = list(Prec           = sample_data[[iwsh]]$Prec,
 
 res_sim <- model_wrapper(indata)
 
-plot(sample_data[[iwsh]]$Runoff, type = 'l', col = 'black', lwd = 2)
-lines(res_sim$Q, col = 'red')
+plotting_results(sample_data[[iwsh]], res_sim, "tst.png" )
+
 ```
 
 ## Example how to calibrate the model
@@ -72,7 +73,6 @@ res_sim <- model_wrapper(indata)
 
 # Plot results ------------------------------------------------------------
 
-plot(evaldata, type = "l", col = "black", lwd = 2)
-lines(res_sim$Q, col = "red")
+plotting_results(sample_data[[iwsh]], res_sim, "tst.png" )
 
 ```
