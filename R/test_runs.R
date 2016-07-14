@@ -96,13 +96,15 @@ model_test_calib = function() {
 
   # Prepare model and input data
 
-  indata <- list(Prec = data_storholen$Prec,
+  indata <- list(Time = data_storholen$DatesR,
+                 Prec = data_storholen$Prec,
                  Tair = data_storholen$Tair,
                  PET = rep(0, nrow(data_storholen$Prec)),
                  SWE = matrix(0, nrow = 1, ncol = ncol(data_storholen$Prec)),
                  St = matrix(0,  nrow = 2, ncol = 1),
                  StUH1 = matrix(0, 20, ncol = 1),
-                 StUH2 = matrix(0, 40, ncol = 1))
+                 StUH2 = matrix(0, 40, ncol = 1),
+                 frac_elev_band = rep(1/8, 8))
 
   # Calibration settings
 

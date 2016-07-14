@@ -1,11 +1,9 @@
 #' Wrapper for running snow and hydrological model
 #'
-#' The snow model is a simple temperature index model.
-#' The hydrological model is the GR4J model.
-#'
-#' @param indata A list with the following items:
+#' @param indata List with following items:
 #'
 #' \itemize{
+#'   \item \code{Time} Vector with times
 #'   \item \code{Prec} Matrix with precipitation, dimensions Ntimes * NZones
 #'   \item \code{Tair} Matrix with air temperature, dimensions Ntimes * NZones
 #'   \item \code{PET} Vector with potential evapotranspiration, dimensions Ntimes
@@ -14,20 +12,23 @@
 #'   \item \code{StUH1} Initial state of first unit hydrograph
 #'   \item \code{StUH2} Initial state of second unit hydrograph
 #'   \item \code{Param} Model parameters
+#'   \item \code{frac_elev_band} Fraction of watershed area for each elevation band
 #' }
 #'
 #' @examples
 #'
 #' iwsh <- 3
 #'
-#' indata = list(Prec   = sample_data[[iwsh]]$Prec,
-#'               Tair   = sample_data[[iwsh]]$Tair,
-#'               PET    = rep(0, nrow(sample_data[[iwsh]]$Prec)),
-#'               SWE    = matrix(0, nrow = 1, ncol = ncol(sample_data[[iwsh]]$Prec)),
-#'               St     = matrix(0, nrow = 2, ncol = 1),
-#'               StUH1  = matrix(0, 20, ncol = 1),
-#'               StUH2  = matrix(0, 40, ncol = 1),
-#'               Param  = c(74.59, 0.81, 214.98, 1.24, 3.69, 1.02))
+#' indata = list(Time           = sample_data[[iwsh]]$time_vec,
+#'               Prec           = sample_data[[iwsh]]$Prec,
+#'               Tair           = sample_data[[iwsh]]$Tair,
+#'               PET            = rep(0, nrow(sample_data[[iwsh]]$Prec)),
+#'               SWE            = matrix(0, nrow = 1, ncol = ncol(sample_data[[iwsh]]$Prec)),
+#'               St             = matrix(0, nrow = 2, ncol = 1),
+#'               StUH1          = matrix(0, 20, ncol = 1),
+#'               StUH2          = matrix(0, 40, ncol = 1),
+#'               Param          = c(74.59, 0.81, 214.98, 1.24, 3.69, 1.02),
+#'               frac_elev_band = sample_data[[iwsh]]$frac_elev_band)
 #'
 #' res_sim <- model_wrapper(indata)
 #'
@@ -49,7 +50,8 @@ model_wrapper <- function(indata) {
   indata$Prec <- indata$Param[6] * indata$Prec
 
   # Test inputs
-
+  if (!"Time" %in% names(indata))
+    stop("Time missing as input")
   if (!"Prec" %in% names(indata))
     stop("Prec missing as input")
   if (!"Tair" %in% names(indata))
@@ -66,6 +68,8 @@ model_wrapper <- function(indata) {
     stop("StUH2 missing as input")
   if (!"Param" %in% names(indata))
     stop("Param missing as input")
+  if (!"frac_elev_band" %in% names(indata))
+    stop("frac_elev_band missing as input")
 
   # Dimensions of input data
 
@@ -81,9 +85,14 @@ model_wrapper <- function(indata) {
 
   res_snow <- snow_wrapper(insnow)
 
+  # Compute average melt and rain flux
+
+  MeltRain_mean <- rowSums(res_snow$MeltRain_all *
+                             matrix(indata$frac_elev_band, nrow = NTimes, ncol = NZones, byrow = TRUE))
+
   # Run runoff model
 
-  inrof <- list(Prec = rowMeans(res_snow$MeltRain_all),
+  inrof <- list(Prec = MeltRain_mean,
                 PET = indata$PET,
                 St = indata$St,
                 StUH1 = indata$StUH1,
@@ -94,11 +103,13 @@ model_wrapper <- function(indata) {
 
   # Function outputs
 
-  res <- list(SWE_all = res_snow$SWE_all,
+  res <- list(Time = indata$Time,
+              SWE_all = res_snow$SWE_all,
               St = res_hyd$St,
               StUH1 = res_hyd$StUH1,
               StUH2 = res_hyd$StUH2,
-              Q = res_hyd$Q)
+              Q = res_hyd$Q,
+              St_all = res_hyd$St_all)
 
   return(res)
 
@@ -250,7 +261,10 @@ gr4j_wrapper <- function(indata) {
 
   NTimes <- length(indata$Prec)
 
-  Q <-  matrix(0, nrow = NTimes, ncol = 1)
+  Q_all <- matrix(0, nrow = NTimes, ncol = 1)
+  St_all <- matrix(0, nrow = NTimes, ncol = 2)
+  StUH1_all <- matrix(0, nrow = NTimes, ncol = 1)
+  StUH2_all <- matrix(0, nrow = NTimes, ncol = 1)
 
   # Run model
 
@@ -261,7 +275,8 @@ gr4j_wrapper <- function(indata) {
                       St = as.double(indata$St),
                       StUH1 = as.double(indata$StUH1),
                       StUH2 = as.double(indata$StUH2),
-                      Q = as.double(Q),
+                      Q_all = as.double(Q_all),
+                      St_all = as.double(St_all),
                       Param = as.double(indata$Param),
                       PACKAGE = "HMOD")
 
@@ -270,7 +285,8 @@ gr4j_wrapper <- function(indata) {
   RES_OUT <- list(St = RES_TMP$St,
                   StUH1 = RES_TMP$StUH1,
                   StUH2 = RES_TMP$StUH2,
-                  Q = RES_TMP$Q)
+                  Q = RES_TMP$Q_all,
+                  St_all = matrix(RES_TMP$St_all, ncol = 2, byrow = FALSE))
 
   return(RES_OUT)
 

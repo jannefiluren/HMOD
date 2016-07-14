@@ -17,6 +17,6 @@ calib_wrapper_model(Param, indata, evaldata)
 Goodness of fit measure
 }
 \description{
-Wrapper for running snow modeule and GR4J and computing performance measures
+Wrapper for running snow module and GR4J and computing performance measures
 }
 

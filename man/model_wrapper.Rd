@@ -7,9 +7,10 @@
 model_wrapper(indata)
 }
 \arguments{
-\item{indata}{A list with the following items:
+\item{indata}{List with following items:
 
 \itemize{
+  \item \code{Time} Vector with times
   \item \code{Prec} Matrix with precipitation, dimensions Ntimes * NZones
   \item \code{Tair} Matrix with air temperature, dimensions Ntimes * NZones
   \item \code{PET} Vector with potential evapotranspiration, dimensions Ntimes
@@ -18,27 +19,29 @@ model_wrapper(indata)
   \item \code{StUH1} Initial state of first unit hydrograph
   \item \code{StUH2} Initial state of second unit hydrograph
   \item \code{Param} Model parameters
+  \item \code{frac_elev_band} Fraction of watershed area for each elevation band
 }}
 }
 \value{
 A list with state variables and simulated runoff
 }
 \description{
-The snow model is a simple temperature index model.
-The hydrological model is the GR4J model.
+Wrapper for running snow and hydrological model
 }
 \examples{
 
 iwsh <- 3
 
-indata = list(Prec   = sample_data[[iwsh]]$Prec,
-              Tair   = sample_data[[iwsh]]$Tair,
-              PET    = rep(0, nrow(sample_data[[iwsh]]$Prec)),
-              SWE    = matrix(0, nrow = 1, ncol = ncol(sample_data[[iwsh]]$Prec)),
-              St     = matrix(0, nrow = 2, ncol = 1),
-              StUH1  = matrix(0, 20, ncol = 1),
-              StUH2  = matrix(0, 40, ncol = 1),
-              Param  = c(74.59, 0.81, 214.98, 1.24, 3.69, 1.02))
+indata = list(Time           = sample_data[[iwsh]]$time_vec,
+              Prec           = sample_data[[iwsh]]$Prec,
+              Tair           = sample_data[[iwsh]]$Tair,
+              PET            = rep(0, nrow(sample_data[[iwsh]]$Prec)),
+              SWE            = matrix(0, nrow = 1, ncol = ncol(sample_data[[iwsh]]$Prec)),
+              St             = matrix(0, nrow = 2, ncol = 1),
+              StUH1          = matrix(0, 20, ncol = 1),
+              StUH2          = matrix(0, 40, ncol = 1),
+              Param          = c(74.59, 0.81, 214.98, 1.24, 3.69, 1.02),
+              frac_elev_band = sample_data[[iwsh]]$frac_elev_band)
 
 res_sim <- model_wrapper(indata)
 
