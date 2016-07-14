@@ -16,7 +16,8 @@ Build this package from source code ``` install.packages(path_to_file, repos = N
 
 iwsh <- 3
 
-indata = list(Prec           = sample_data[[iwsh]]$Prec,
+indata = list(Time           = sample_data[[iwsh]]$time_vec,
+              Prec           = sample_data[[iwsh]]$Prec,
               Tair           = sample_data[[iwsh]]$Tair,
               PET            = rep(0, nrow(sample_data[[iwsh]]$Prec)),
               SWE            = matrix(0, nrow = 1, ncol = ncol(sample_data[[iwsh]]$Prec)),
