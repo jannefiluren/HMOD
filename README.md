@@ -16,22 +16,22 @@ Build this package from source code ``` install.packages(path_to_file, repos = N
 
 iwsh <- 3
 
-indata = list(Time           = sample_data[[iwsh]]$time_vec,
-              Prec           = sample_data[[iwsh]]$Prec,
-              Tair           = sample_data[[iwsh]]$Tair,
-              PET            = rep(0, nrow(sample_data[[iwsh]]$Prec)),
-              SWE            = matrix(0, nrow = 1, ncol = ncol(sample_data[[iwsh]]$Prec)),
+data_obs <- sample_data[[iwsh]]
+
+indata = list(Time           = data_obs$time_vec,
+              Prec           = data_obs$Prec,
+              Tair           = data_obs$Tair,
+              PET            = rep(0, nrow(data_obs$Prec)),
+              SWE            = matrix(0, nrow = 1, ncol = ncol(data_obs$Prec)),
               St             = matrix(0, nrow = 2, ncol = 1),
               StUH1          = matrix(0, 20, ncol = 1),
               StUH2          = matrix(0, 40, ncol = 1),
               Param          = c(74.59, 0.81, 214.98, 1.24, 3.69, 1.02),
-              frac_elev_band = sample_data[[iwsh]]$frac_elev_band)
+              frac_elev_band = data_obs$frac_elev_band)
 
-res_sim <- model_wrapper(indata)
+data_sim <- model_wrapper(indata)
 
-path <- getwd()
-
-plotting_results(sample_data[[iwsh]], res_sim, path)
+plot_interactive(data_obs, data_sim)
 
 ```
 
@@ -43,18 +43,20 @@ plotting_results(sample_data[[iwsh]], res_sim, path)
 
 iwsh <- 3
 
-NTimes <- nrow(sample_data[[iwsh]]$Prec)
-NZones <- ncol(sample_data[[iwsh]]$Prec)
- 
-indata = list(Time           = sample_data[[iwsh]]$time_vec,
-              Prec           = sample_data[[iwsh]]$Prec,
-              Tair           = sample_data[[iwsh]]$Tair,
-              PET            = rep(0, nrow(sample_data[[iwsh]]$Prec)),
-              SWE            = matrix(0, nrow = 1, ncol = ncol(sample_data[[iwsh]]$Prec)),
+data_obs <- sample_data[[iwsh]]
+
+NTimes <- nrow(data_obs$Prec)
+NZones <- ncol(data_obs$Prec)
+
+indata = list(Time           = data_obs$time_vec,
+              Prec           = data_obs$Prec,
+              Tair           = data_obs$Tair,
+              PET            = rep(0, nrow(data_obs$Prec)),
+              SWE            = matrix(0, nrow = 1, ncol = ncol(data_obs$Prec)),
               St             = matrix(0, nrow = 2, ncol = 1),
               StUH1          = matrix(0, 20, ncol = 1),
               StUH2          = matrix(0, 40, ncol = 1),
-              frac_elev_band = sample_data[[iwsh]]$frac_elev_band)
+              frac_elev_band = data_obs$frac_elev_band)
 
 # Calibrate model ---------------------------------------------------------
 
@@ -64,7 +66,7 @@ sparam <- (lparam + uparam)/2
 
 control <- list(MinMax = "max", write2disk = FALSE, verbose = FALSE)
 
-evaldata <- sample_data[[iwsh]]$Runoff
+evaldata <- data_obs$Runoff
 
 res_calib <- hydroPSO::hydroPSO(sparam, fn = calib_wrapper_model, indata, evaldata,
                                 lower = lparam, upper = uparam, control = control)
@@ -77,8 +79,6 @@ res_sim <- model_wrapper(indata)
 
 # Plot results ------------------------------------------------------------
 
-path <- getwd()
-
-plotting_results(sample_data[[iwsh]], res_sim, path)
+plot_interactive(data_obs, data_sim)
 
 ```
