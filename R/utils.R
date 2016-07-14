@@ -4,11 +4,11 @@
 #'
 #' @param data_obs Observed data (in format given by package NVEDATA)
 #' @param data_mod Model data (in raw output format)
-#' @param filename Output filename
+#' @param path Path for saving plots
 #' @import ggplot2
 #' @export
 
-plotting_results <- function(data_obs, data_mod, filename) {
+plotting_results <- function(data_obs, data_mod, path) {
 
   summary_df = data.frame(Time = data_obs$time_vec,
                           Qobs = data_obs$Runoff,
@@ -24,6 +24,8 @@ plotting_results <- function(data_obs, data_mod, filename) {
   p3 <- ggplot(data=summary_df, aes(x=Time)) + geom_line(aes(y=SWE), color="black") + ylab("SWE") + theme_bw()
 
   p <- gridExtra::grid.arrange(p1, p2, p3)
+
+  filename <- file.path(path, paste("plot_", data_obs$regine_main, ".png", sep=""))
 
   ggsave(p, file = filename, width = 11, height = 10, dpi = 600)
 

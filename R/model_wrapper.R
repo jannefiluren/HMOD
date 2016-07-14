@@ -1,11 +1,9 @@
 #' Wrapper for running snow and hydrological model
 #'
-#' The snow model is a simple temperature index model.
-#' The hydrological model is the GR4J model.
-#'
-#' @param indata A list with the following items:
+#' @param indata List with following items:
 #'
 #' \itemize{
+#'   \item \code{Time} Vector with times
 #'   \item \code{Prec} Matrix with precipitation, dimensions Ntimes * NZones
 #'   \item \code{Tair} Matrix with air temperature, dimensions Ntimes * NZones
 #'   \item \code{PET} Vector with potential evapotranspiration, dimensions Ntimes
@@ -21,7 +19,8 @@
 #'
 #' iwsh <- 3
 #'
-#' indata = list(Prec           = sample_data[[iwsh]]$Prec,
+#' indata = list(Time           = sample_data[[iwsh]]$time_vec,
+#'               Prec           = sample_data[[iwsh]]$Prec,
 #'               Tair           = sample_data[[iwsh]]$Tair,
 #'               PET            = rep(0, nrow(sample_data[[iwsh]]$Prec)),
 #'               SWE            = matrix(0, nrow = 1, ncol = ncol(sample_data[[iwsh]]$Prec)),
@@ -51,7 +50,8 @@ model_wrapper <- function(indata) {
   indata$Prec <- indata$Param[6] * indata$Prec
 
   # Test inputs
-
+  if (!"Time" %in% names(indata))
+    stop("Time missing as input")
   if (!"Prec" %in% names(indata))
     stop("Prec missing as input")
   if (!"Tair" %in% names(indata))
@@ -103,7 +103,8 @@ model_wrapper <- function(indata) {
 
   # Function outputs
 
-  res <- list(SWE_all = res_snow$SWE_all,
+  res <- list(Time = indata$Time,
+              SWE_all = res_snow$SWE_all,
               St = res_hyd$St,
               StUH1 = res_hyd$StUH1,
               StUH2 = res_hyd$StUH2,

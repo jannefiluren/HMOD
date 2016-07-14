@@ -7,9 +7,10 @@
 model_wrapper(indata)
 }
 \arguments{
-\item{indata}{A list with the following items:
+\item{indata}{List with following items:
 
 \itemize{
+  \item \code{Time} Vector with times
   \item \code{Prec} Matrix with precipitation, dimensions Ntimes * NZones
   \item \code{Tair} Matrix with air temperature, dimensions Ntimes * NZones
   \item \code{PET} Vector with potential evapotranspiration, dimensions Ntimes
@@ -25,14 +26,14 @@ model_wrapper(indata)
 A list with state variables and simulated runoff
 }
 \description{
-The snow model is a simple temperature index model.
-The hydrological model is the GR4J model.
+Wrapper for running snow and hydrological model
 }
 \examples{
 
 iwsh <- 3
 
-indata = list(Prec           = sample_data[[iwsh]]$Prec,
+indata = list(Time           = sample_data[[iwsh]]$time_vec,
+              Prec           = sample_data[[iwsh]]$Prec,
               Tair           = sample_data[[iwsh]]$Tair,
               PET            = rep(0, nrow(sample_data[[iwsh]]$Prec)),
               SWE            = matrix(0, nrow = 1, ncol = ncol(sample_data[[iwsh]]$Prec)),

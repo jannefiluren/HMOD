@@ -4,14 +4,14 @@
 \alias{plotting_results}
 \title{Plotting model results}
 \usage{
-plotting_results(data_obs, data_mod, filename)
+plotting_results(data_obs, data_mod, path)
 }
 \arguments{
 \item{data_obs}{Observed data (in format given by package NVEDATA)}
 
 \item{data_mod}{Model data (in raw output format)}
 
-\item{filename}{Output filename}
+\item{path}{Path for saving plots}
 }
 \description{
 Plotting model results
