@@ -66,9 +66,6 @@ plotting_results <- function(data_obs, data_sim, path) {
 }
 
 
-
-
-
 #' Interactive plot of model results
 #'
 #' @param data_obs Observed data (in format given by package NVEDATA)

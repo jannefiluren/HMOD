@@ -104,6 +104,7 @@ model_wrapper <- function(indata) {
   # Function outputs
 
   res <- list(Time = indata$Time,
+              SWE = res_snow$SWE,
               SWE_all = res_snow$SWE_all,
               St = res_hyd$St,
               StUH1 = res_hyd$StUH1,
