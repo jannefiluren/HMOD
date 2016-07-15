@@ -1,4 +1,4 @@
-      subroutine gr4j_wrapper(NTimes,Prec,PET,St,StUH1,StUH2,Q_all,St_all,Param)
+      subroutine gr4j_wrapper_ens(NTimes,Prec,PET,St,StUH1,StUH2,Q_all,Param)
 
       implicit none
 
@@ -12,7 +12,6 @@
       doubleprecision, dimension(4) :: Param
 	  
 	  doubleprecision, dimension(NTimes) :: Q_all
-	  doubleprecision, dimension(NTimes,2) :: St_all
 	  
 !parameters, internal states and variables
 
@@ -38,12 +37,9 @@
 
       CALL MOD_GR4J(St,StUH1,StUH2,OrdUH1,OrdUH2,Param,Prec(itime),PET(itime),Q_all(itime))
 	  
-	  St_all(itime,1) = St(1)
-	  St_all(itime,2) = St(2)
-	  
       end do
 
-      end subroutine gr4j_wrapper
+      end subroutine gr4j_wrapper_ens
 
 
 
