@@ -44,8 +44,8 @@ run_ensemble <- function(data_obs, param, NEns) {
   assign_indata <- function(model_data, itime) {
 
     model_data$Time  = data_obs$time_vec[itime]
-    model_data$Prec  = data_obs$Prec[itime, ] * runif(1, min = 0.5, max = 1.5)
-    model_data$Tair  = data_obs$Tair[itime, ] + rnorm(1, sd = 2)
+    model_data$Prec  = data_obs$Prec[itime, ] # * runif(1, min = 0.5, max = 1.5)
+    model_data$Tair  = data_obs$Tair[itime, ] # + rnorm(1, sd = 2)
     model_data$PET   = 0
 
     return(model_data)
